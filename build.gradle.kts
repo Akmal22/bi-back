@@ -1,12 +1,12 @@
-plugins {
-    java
-    id("org.springframework.boot") version "3.5.6"
-    id("io.spring.dependency-management") version "1.1.7"
-}
-
 group = "kz.bi"
 version = "0.0.1-SNAPSHOT"
 description = "bi-back"
+
+plugins {
+    java
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+}
 
 java {
     toolchain {
@@ -19,9 +19,20 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation(libs.spring.boot.starter)
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.security)
+    implementation(libs.spring.openapi.starter)
+    implementation(libs.liquibase.core)
+    implementation(libs.postgresql)
+    implementation(libs.lombok)
+
+    annotationProcessor(libs.lombok)
+
+    testImplementation(libs.spring.boot.test)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.withType<Test> {
