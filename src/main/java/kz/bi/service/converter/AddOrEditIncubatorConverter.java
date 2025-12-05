@@ -1,9 +1,15 @@
-package kz.bi.service.util;
+package kz.bi.service.converter;
 
 import kz.bi.dao.entity.incubator.*;
 import kz.bi.service.dto.incubator.*;
+import lombok.experimental.UtilityClass;
 
-public class IncubatorDtoToEntityConverter {
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@UtilityClass
+public class AddOrEditIncubatorConverter {
 
     public static IncubatorCharacteristicsEntity convertToCharacteristicsEntity(
             IncubatorCharacteristicsDto dto, IncubatorEntity incubatorEntity) {
@@ -45,6 +51,7 @@ public class IncubatorDtoToEntityConverter {
             IncubatorResidentsDto dto, IncubatorEntity incubatorEntity) {
         IncubatorResidentsEntity entity = new IncubatorResidentsEntity();
         entity.setIncubator(incubatorEntity);
+        entity.setYear(dto.getYear());
         entity.setIncubatedCompanies(dto.getIncubatedCompanies());
         entity.setFailedCompanies(dto.getFailedCompanies());
         entity.setGraduatedCompanies(dto.getGraduatedCompanies());
@@ -86,6 +93,7 @@ public class IncubatorDtoToEntityConverter {
             IncubatorIncomeDto dto, IncubatorEntity incubatorEntity) {
         IncubatorIncomeEntity entity = new IncubatorIncomeEntity();
         entity.setIncubator(incubatorEntity);
+        entity.setYear(dto.getYear());
         entity.setInitialCapital(dto.getInitialCapital());
         entity.setPaidServicesIncome(dto.getPaidServicesIncome());
         entity.setPaidTrainingIncome(dto.getPaidTrainingIncome());
@@ -100,6 +108,7 @@ public class IncubatorDtoToEntityConverter {
             IncubatorInvestmentDto dto, IncubatorEntity incubatorEntity) {
         IncubatorInvestmentEntity entity = new IncubatorInvestmentEntity();
         entity.setIncubator(incubatorEntity);
+        entity.setYear(dto.getYear());
         entity.setSeed(dto.getSeed());
         entity.setState(dto.getState());
         entity.setPrivates(dto.getPrivates());
@@ -131,5 +140,41 @@ public class IncubatorDtoToEntityConverter {
         entity.setProjectsCount(dto.getProjectsCount());
         entity.setFund(dto.getFund());
         return entity;
+    }
+
+    public static Set<IncubatorResidentsEntity> convertToResidentsEntitySet(
+            List<IncubatorResidentsDto> dtos, IncubatorEntity incubatorEntity) {
+        if (dtos == null || dtos.isEmpty()) {
+            return new HashSet<>();
+        }
+        Set<IncubatorResidentsEntity> entities = new HashSet<>();
+        for (IncubatorResidentsDto dto : dtos) {
+            entities.add(convertToResidentsEntity(dto, incubatorEntity));
+        }
+        return entities;
+    }
+
+    public static Set<IncubatorIncomeEntity> convertToIncomeEntitySet(
+            List<IncubatorIncomeDto> dtos, IncubatorEntity incubatorEntity) {
+        if (dtos == null || dtos.isEmpty()) {
+            return new HashSet<>();
+        }
+        Set<IncubatorIncomeEntity> entities = new HashSet<>();
+        for (IncubatorIncomeDto dto : dtos) {
+            entities.add(convertToIncomeEntity(dto, incubatorEntity));
+        }
+        return entities;
+    }
+
+    public static Set<IncubatorInvestmentEntity> convertToInvestmentEntitySet(
+            List<IncubatorInvestmentDto> dtos, IncubatorEntity incubatorEntity) {
+        if (dtos == null || dtos.isEmpty()) {
+            return new HashSet<>();
+        }
+        Set<IncubatorInvestmentEntity> entities = new HashSet<>();
+        for (IncubatorInvestmentDto dto : dtos) {
+            entities.add(convertToInvestmentEntity(dto, incubatorEntity));
+        }
+        return entities;
     }
 }

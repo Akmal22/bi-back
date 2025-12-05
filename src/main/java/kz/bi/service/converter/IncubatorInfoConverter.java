@@ -1,25 +1,52 @@
-package kz.bi.service.util;
+package kz.bi.service.converter;
 
 import kz.bi.dao.entity.incubator.*;
+import kz.bi.service.dto.CountryDto;
 import kz.bi.service.dto.incubator.*;
+import kz.bi.service.dto.incubator.info.IncubatorInfoDto;
+import kz.bi.service.dto.incubator.info.SimpleIncubatorInfoDto;
+import kz.bi.service.dto.user.UserDto;
+import lombok.experimental.UtilityClass;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
-public class IncubatorEntityToDtoConverter {
-
-    public static IncubatorDto convertToDto(IncubatorEntity entity) {
-        IncubatorDto dto = new IncubatorDto();
-        dto.setId(entity.getId());
+@UtilityClass
+public class IncubatorInfoConverter {
+    public static SimpleIncubatorInfoDto convertToDtoSimple(IncubatorEntity entity) {
+        SimpleIncubatorInfoDto dto = new SimpleIncubatorInfoDto();
+        dto.setIncubatorUuid(entity.getUuid());
         dto.setName(entity.getName());
         dto.setDescription(entity.getDescription());
         dto.setFounded(entity.getFounded());
-        
-        if (entity.getManager() != null) {
-            dto.setManagerId(entity.getManager().getId());
-        }
-        
+
+        return dto;
+    }
+
+    public static IncubatorInfoDto convertToDto(IncubatorEntity entity) {
+        IncubatorInfoDto dto = new IncubatorInfoDto();
+        dto.setId(entity.getId());
+        dto.setUuid(entity.getUuid());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        dto.setFounded(entity.getFounded());
+
         if (entity.getCountry() != null) {
-            dto.setCountryId(entity.getCountry().getId());
+            var country = new CountryDto();
+            country.setCountryCode(entity.getCountry().getCountryCode());
+            country.setCountryName(entity.getCountry().getCountryName());
+            country.setCurrencyName(entity.getCountry().getCurrencyName());
+            country.setCurrencyCode(entity.getCountry().getCurrencyCode());
+            dto.setCountry(country);
+        }
+
+        if (entity.getManager() != null) {
+            var manager = new UserDto();
+            manager.setId(entity.getManager().getId());
+            manager.setEmail(entity.getManager().getEmail());
+            manager.setUsername(entity.getManager().getUsername());
+            manager.setFullName(entity.getManager().getFullName());
+            dto.setManager(manager);
         }
 
         if (entity.getIncubatorCharacteristics() != null) {
@@ -34,20 +61,29 @@ public class IncubatorEntityToDtoConverter {
             dto.setIncubatorSpace(convertSpaceToDto(entity.getIncubatorSpace()));
         }
 
-        if (entity.getIncubatorResidents() != null) {
-            dto.setIncubatorResidents(convertResidentsToDto(entity.getIncubatorResidents()));
+        if (entity.getIncubatorResidents() != null && !entity.getIncubatorResidents().isEmpty()) {
+            dto.setIncubatorResidents(entity.getIncubatorResidents().stream()
+                    .map(IncubatorInfoConverter::convertResidentsToDto)
+                    .sorted(Comparator.comparingInt(IncubatorResidentsDto::getYear))
+                    .collect(Collectors.toList()));
         }
 
         if (entity.getIncubatorServices() != null) {
             dto.setIncubatorServices(convertServiceToDto(entity.getIncubatorServices()));
         }
 
-        if (entity.getIncubatorIncome() != null) {
-            dto.setIncubatorIncome(convertIncomeToDto(entity.getIncubatorIncome()));
+        if (entity.getIncubatorIncome() != null && !entity.getIncubatorIncome().isEmpty()) {
+            dto.setIncubatorIncome(entity.getIncubatorIncome().stream()
+                    .map(IncubatorInfoConverter::convertIncomeToDto)
+                    .sorted(Comparator.comparingInt(IncubatorIncomeDto::getYear))
+                    .collect(Collectors.toList()));
         }
 
-        if (entity.getIncubatorInvestment() != null) {
-            dto.setIncubatorInvestment(convertInvestmentToDto(entity.getIncubatorInvestment()));
+        if (entity.getIncubatorInvestment() != null && !entity.getIncubatorInvestment().isEmpty()) {
+            dto.setIncubatorInvestment(entity.getIncubatorInvestment().stream()
+                    .map(IncubatorInfoConverter::convertInvestmentToDto)
+                    .sorted(Comparator.comparingInt(IncubatorInvestmentDto::getYear))
+                    .collect(Collectors.toList()));
         }
 
         if (entity.getIncubatorExpense() != null) {
@@ -56,7 +92,8 @@ public class IncubatorEntityToDtoConverter {
 
         if (entity.getIncubatorProjects() != null && !entity.getIncubatorProjects().isEmpty()) {
             dto.setIncubatorProjects(entity.getIncubatorProjects().stream()
-                    .map(IncubatorEntityToDtoConverter::convertProjectsToDto)
+                    .map(IncubatorInfoConverter::convertProjectsToDto)
+                    .sorted(Comparator.comparingInt(IncubatorProjectsDto::getYear))
                     .collect(Collectors.toList()));
         }
 
@@ -95,6 +132,8 @@ public class IncubatorEntityToDtoConverter {
 
     public static IncubatorResidentsDto convertResidentsToDto(IncubatorResidentsEntity entity) {
         IncubatorResidentsDto dto = new IncubatorResidentsDto();
+        dto.setId(entity.getId());
+        dto.setYear(entity.getYear());
         dto.setIncubatedCompanies(entity.getIncubatedCompanies());
         dto.setFailedCompanies(entity.getFailedCompanies());
         dto.setGraduatedCompanies(entity.getGraduatedCompanies());
@@ -132,6 +171,8 @@ public class IncubatorEntityToDtoConverter {
 
     public static IncubatorIncomeDto convertIncomeToDto(IncubatorIncomeEntity entity) {
         IncubatorIncomeDto dto = new IncubatorIncomeDto();
+        dto.setId(entity.getId());
+        dto.setYear(entity.getYear());
         dto.setInitialCapital(entity.getInitialCapital());
         dto.setPaidServicesIncome(entity.getPaidServicesIncome());
         dto.setPaidTrainingIncome(entity.getPaidTrainingIncome());
@@ -144,6 +185,8 @@ public class IncubatorEntityToDtoConverter {
 
     public static IncubatorInvestmentDto convertInvestmentToDto(IncubatorInvestmentEntity entity) {
         IncubatorInvestmentDto dto = new IncubatorInvestmentDto();
+        dto.setId(entity.getId());
+        dto.setYear(entity.getYear());
         dto.setSeed(entity.getSeed());
         dto.setState(entity.getState());
         dto.setPrivates(entity.getPrivates());

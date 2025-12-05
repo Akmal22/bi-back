@@ -6,19 +6,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class IncubatorDto {
+public class AddOrEditIncubatorDto {
     private Long id;
+    private String uuid;
     private String name;
     private String description;
     private Long managerId;
-    private Long countryId;
+    private String countryCode;
     private IncubatorCharacteristicsDto incubatorCharacteristics;
     private IncubatorInfrastructureDto incubatorInfrastructure;
     private IncubatorSpaceDto incubatorSpace;
-    private IncubatorResidentsDto incubatorResidents;
+    private List<IncubatorResidentsDto> incubatorResidents;
     private IncubatorServiceDto incubatorServices;
-    private IncubatorIncomeDto incubatorIncome;
-    private IncubatorInvestmentDto incubatorInvestment;
+    private List<IncubatorIncomeDto> incubatorIncome;
+    private List<IncubatorInvestmentDto> incubatorInvestment;
     private IncubatorExpenseDto incubatorExpense;
     private List<IncubatorProjectsDto> incubatorProjects;
     private LocalDateTime founded;

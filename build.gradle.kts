@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.security)
+    implementation(libs.spring.session.jdbc)
     implementation(libs.spring.openapi.starter)
     implementation(libs.liquibase.core)
     implementation(libs.postgresql)

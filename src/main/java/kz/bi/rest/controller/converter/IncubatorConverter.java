@@ -1,31 +1,58 @@
-package kz.bi.rest.controller.util;
+package kz.bi.rest.controller.converter;
 
 import kz.bi.rest.controller.dto.incubator.response.*;
 import kz.bi.service.dto.incubator.*;
+import kz.bi.service.dto.incubator.info.IncubatorInfoDto;
+import kz.bi.service.dto.incubator.info.SimpleIncubatorInfoDto;
+import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class IncubatorDtoConverter {
+@UtilityClass
+public class IncubatorConverter {
+    public static SimpleIncubator convertToSimpleIncubator(SimpleIncubatorInfoDto incubator) {
+        return new SimpleIncubator()
+                .setIncubatorUuid(incubator.getIncubatorUuid())
+                .setName(incubator.getName())
+                .setDescription(incubator.getDescription())
+                .setFounded(incubator.getFounded());
 
-    public static Incubator toIncubator(IncubatorDto dto) {
+    }
+
+    public static Incubator toIncubator(IncubatorInfoDto dto) {
         if (dto == null) {
             return null;
         }
         Incubator incubator = new Incubator();
         incubator.setName(dto.getName());
         incubator.setDescription(dto.getDescription());
-        incubator.setManagerId(dto.getManagerId());
-        incubator.setCountryId(dto.getCountryId());
+        if (dto.getManager() != null) {
+            ManagerInfo manager = new ManagerInfo();
+            manager.setId(dto.getManager().getId());
+            manager.setUsername(dto.getManager().getUsername());
+            manager.setEmail(dto.getManager().getEmail());
+            manager.setFullName(dto.getManager().getFullName());
+            incubator.setManager(manager);
+        }
+
+        if (dto.getCountry() != null) {
+            var country = new CountryInfo();
+            country.setCountryCode(dto.getCountry().getCountryCode());
+            country.setCountryName(dto.getCountry().getCountryName());
+            incubator.setCountry(country);
+        }
+
         incubator.setFounded(dto.getFounded());
         incubator.setIncubatorCharacteristics(toIncubatorCharacteristics(dto.getIncubatorCharacteristics()));
         incubator.setIncubatorInfrastructure(toIncubatorInfrastructure(dto.getIncubatorInfrastructure()));
         incubator.setIncubatorSpace(toIncubatorSpace(dto.getIncubatorSpace()));
-        incubator.setIncubatorResidents(toIncubatorResidents(dto.getIncubatorResidents()));
+        incubator.setIncubatorResidents(toIncubatorResidentsList(dto.getIncubatorResidents()));
         incubator.setIncubatorServices(toIncubatorService(dto.getIncubatorServices()));
-        incubator.setIncubatorIncome(toIncubatorIncome(dto.getIncubatorIncome()));
-        incubator.setIncubatorInvestment(toIncubatorInvestment(dto.getIncubatorInvestment()));
+        incubator.setIncubatorIncome(toIncubatorIncomeList(dto.getIncubatorIncome()));
+        incubator.setIncubatorInvestment(toIncubatorInvestmentList(dto.getIncubatorInvestment()));
         incubator.setIncubatorExpense(toIncubatorExpense(dto.getIncubatorExpense()));
         incubator.setIncubatorProjects(toIncubatorProjectsList(dto.getIncubatorProjects()));
         return incubator;
@@ -70,11 +97,21 @@ public class IncubatorDtoConverter {
         return space;
     }
 
+    private static List<IncubatorResidents> toIncubatorResidentsList(List<IncubatorResidentsDto> dtos) {
+        if (dtos == null || dtos.isEmpty()) {
+            return null;
+        }
+        return dtos.stream()
+                .map(IncubatorConverter::toIncubatorResidents)
+                .collect(Collectors.toList());
+    }
+
     private static IncubatorResidents toIncubatorResidents(IncubatorResidentsDto dto) {
         if (dto == null) {
             return null;
         }
         IncubatorResidents residents = new IncubatorResidents();
+        residents.setYear(dto.getYear());
         residents.setIncubatedCompanies(BigDecimal.valueOf(dto.getIncubatedCompanies()));
         residents.setFailedCompanies(BigDecimal.valueOf(dto.getFailedCompanies()));
         residents.setGraduatedCompanies(BigDecimal.valueOf(dto.getGraduatedCompanies()));
@@ -113,11 +150,21 @@ public class IncubatorDtoConverter {
         return service;
     }
 
+    private static List<IncubatorIncome> toIncubatorIncomeList(List<IncubatorIncomeDto> dtos) {
+        if (dtos == null || dtos.isEmpty()) {
+            return null;
+        }
+        return dtos.stream()
+                .map(IncubatorConverter::toIncubatorIncome)
+                .collect(Collectors.toList());
+    }
+
     private static IncubatorIncome toIncubatorIncome(IncubatorIncomeDto dto) {
         if (dto == null) {
             return null;
         }
         IncubatorIncome income = new IncubatorIncome();
+        income.setYear(dto.getYear());
         income.setInitialCapital(dto.getInitialCapital());
         income.setPaidServicesIncome(dto.getPaidServicesIncome());
         income.setPaidTrainingIncome(dto.getPaidTrainingIncome());
@@ -128,11 +175,21 @@ public class IncubatorDtoConverter {
         return income;
     }
 
+    private static List<IncubatorInvestment> toIncubatorInvestmentList(List<IncubatorInvestmentDto> dtos) {
+        if (dtos == null || dtos.isEmpty()) {
+            return null;
+        }
+        return dtos.stream()
+                .map(IncubatorConverter::toIncubatorInvestment)
+                .collect(Collectors.toList());
+    }
+
     private static IncubatorInvestment toIncubatorInvestment(IncubatorInvestmentDto dto) {
         if (dto == null) {
             return null;
         }
         IncubatorInvestment investment = new IncubatorInvestment();
+        investment.setYear(dto.getYear());
         investment.setSeed(dto.getSeed());
         investment.setState(dto.getState());
         investment.setPrivates(dto.getPrivates());
@@ -162,7 +219,7 @@ public class IncubatorDtoConverter {
             return null;
         }
         return dtos.stream()
-                .map(IncubatorDtoConverter::toIncubatorProjects)
+                .map(IncubatorConverter::toIncubatorProjects)
                 .collect(Collectors.toList());
     }
 

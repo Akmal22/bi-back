@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -22,6 +25,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         return new ResponseEntity<>(new ErrorResponse(messageSource.getMessage("internal.error", null, Locale.getDefault()), "Internal error"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException e) {
+        return new ResponseEntity<>(new ErrorResponse(messageSource.getMessage("invalid.request.body", null, Locale.getDefault()), "Invalid request body"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(DisabledException e) {
+        return new ResponseEntity<>(new ErrorResponse(messageSource.getMessage("user.is.disabled", null, Locale.getDefault()), "User disabled"), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(UsernameNotFoundException e) {
+        return new ResponseEntity<>(new ErrorResponse(messageSource.getMessage("user.or.password.wrong", null, Locale.getDefault()), "User not found"), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(ValidationException.class)

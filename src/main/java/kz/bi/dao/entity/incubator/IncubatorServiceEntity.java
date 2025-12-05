@@ -2,13 +2,18 @@ package kz.bi.dao.entity.incubator;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "incubator_services")
 @Data
+@ToString(exclude = "incubator")
+@EqualsAndHashCode(exclude = "incubator")
 public class IncubatorServiceEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -48,6 +53,6 @@ public class IncubatorServiceEntity {
     @Column(name = "used_trainings", nullable = false)
     private Integer usedTrainings;
 
-    @Column(name = "paid_traingins", nullable = false)
+    @Column(name = "paid_trainings", nullable = false)
     private Integer paidTrainings;
 }

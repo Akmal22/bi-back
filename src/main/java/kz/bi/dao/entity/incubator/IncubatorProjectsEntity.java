@@ -2,12 +2,16 @@ package kz.bi.dao.entity.incubator;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
 @Table(name = "incubator_projects")
 @Entity
 @Data
+@ToString(exclude = "incubator")
+@EqualsAndHashCode(exclude = "incubator")
 public class IncubatorProjectsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +22,7 @@ public class IncubatorProjectsEntity {
     @JoinColumn(name = "incubator_id", nullable = false)
     private IncubatorEntity incubator;
 
-    @Column(name = "year", unique = true)
+    @Column(name = "year", nullable = false)
     private int year;
 
     @Column(name = "projects_count")

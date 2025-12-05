@@ -2,13 +2,18 @@ package kz.bi.dao.entity.incubator;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @Entity
 @Table(name = "incubator_space")
+@ToString(exclude = "incubator")
+@EqualsAndHashCode(exclude = "incubator")
 public class IncubatorSpaceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)

@@ -2,18 +2,26 @@ package kz.bi.dao.entity.incubator;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Table(name = "incubator_residents")
 @Entity
 @Data
+@ToString(exclude = "incubator")
+@EqualsAndHashCode(exclude = "incubator")
 public class IncubatorResidentsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "incubator_id", nullable = false)
     private IncubatorEntity incubator;
+
+    @Column(name = "year", nullable = false)
+    private Integer year;
 
     @Column(name = "incubated_companies", nullable = false)
     private long incubatedCompanies;
@@ -42,7 +50,7 @@ public class IncubatorResidentsEntity {
     @Column(name = "active_after_3_years", nullable = false)
     private long activeAfter3Years;
 
-    @Column(name = "active_after_5_year", nullable = false)
+    @Column(name = "active_after_5_years", nullable = false)
     private long activeAfter5Years;
 
     @Column(name = "failed_after_3_months", nullable = false)
@@ -57,6 +65,6 @@ public class IncubatorResidentsEntity {
     @Column(name = "failed_after_3_years", nullable = false)
     private long failedAfter3Years;
 
-    @Column(name = "failed_after_5_year", nullable = false)
+    @Column(name = "failed_after_5_years", nullable = false)
     private long failedAfter5Years;
 }

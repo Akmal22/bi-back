@@ -7,26 +7,26 @@ import kz.bi.dao.entity.user.UserEntity;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "incubator")
 @NamedEntityGraph(
-    name = "IncubatorEntity.withAllRelations",
-    attributeNodes = {
-        @NamedAttributeNode("manager"),
-        @NamedAttributeNode("country"),
-        @NamedAttributeNode("incubatorCharacteristics"),
-        @NamedAttributeNode("incubatorInfrastructure"),
-        @NamedAttributeNode("incubatorSpace"),
-        @NamedAttributeNode("incubatorResidents"),
-        @NamedAttributeNode("incubatorServices"),
-        @NamedAttributeNode("incubatorIncome"),
-        @NamedAttributeNode("incubatorInvestment"),
-        @NamedAttributeNode("incubatorExpense"),
-        @NamedAttributeNode("incubatorProjects")
-    }
+        name = "IncubatorEntity.withAllRelations",
+        attributeNodes = {
+                @NamedAttributeNode("manager"),
+                @NamedAttributeNode("country"),
+                @NamedAttributeNode("incubatorCharacteristics"),
+                @NamedAttributeNode("incubatorInfrastructure"),
+                @NamedAttributeNode("incubatorSpace"),
+                @NamedAttributeNode("incubatorResidents"),
+                @NamedAttributeNode("incubatorServices"),
+                @NamedAttributeNode("incubatorIncome"),
+                @NamedAttributeNode("incubatorInvestment"),
+                @NamedAttributeNode("incubatorExpense"),
+                @NamedAttributeNode("incubatorProjects")
+        }
 )
 public class IncubatorEntity {
     @Id
@@ -60,23 +60,23 @@ public class IncubatorEntity {
     @OneToOne(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private IncubatorSpaceEntity incubatorSpace;
 
-    @OneToOne(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private IncubatorResidentsEntity incubatorResidents;
+    @OneToMany(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<IncubatorResidentsEntity> incubatorResidents;
 
     @OneToOne(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private IncubatorServiceEntity incubatorServices;
 
-    @OneToOne(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private IncubatorIncomeEntity incubatorIncome;
+    @OneToMany(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<IncubatorIncomeEntity> incubatorIncome;
 
-    @OneToOne(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private IncubatorInvestmentEntity incubatorInvestment;
+    @OneToMany(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<IncubatorInvestmentEntity> incubatorInvestment;
 
     @OneToOne(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private IncubatorExpenseEntity incubatorExpense;
 
     @OneToMany(mappedBy = "incubator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<IncubatorProjectsEntity> incubatorProjects;
+    private Set<IncubatorProjectsEntity> incubatorProjects;
 
     @Column(name = "founded", nullable = false)
     private LocalDateTime founded;

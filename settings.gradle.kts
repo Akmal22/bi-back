@@ -22,6 +22,7 @@ dependencyResolutionManagement {
             library("spring-boot-starter-data-jpa", "org.springframework.boot", "spring-boot-starter-data-jpa").withoutVersion()
             library("spring-boot-starter-validation", "org.springframework.boot", "spring-boot-starter-validation").withoutVersion()
             library("spring-boot-starter-security", "org.springframework.boot", "spring-boot-starter-security").withoutVersion()
+            library("spring-session-jdbc", "org.springframework.session", "spring-session-jdbc").withoutVersion()
             library("spring-openapi-starter", "org.springdoc", "springdoc-openapi-starter-webmvc-ui").version("2.8.14")
 
             // Other

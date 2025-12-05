@@ -2,10 +2,14 @@ package kz.bi.dao.entity.incubator;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "incubator_characteristics")
 @Data
+@ToString(exclude = "incubator")
+@EqualsAndHashCode(exclude = "incubator")
 public class IncubatorCharacteristicsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

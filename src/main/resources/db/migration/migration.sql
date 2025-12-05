@@ -10,14 +10,15 @@ CREATE TABLE users
     password  VARCHAR(256) NOT NULL,
     full_name VARCHAR(256),
     email     VARCHAR(100) NOT NULL UNIQUE,
-    role      VARCHAR(16)  NOT NULL
+    role      VARCHAR(16)  NOT NULL,
+    enabled   BOOLEAN      NOT NULL
 );
 --rollback DROP TABLE IF EXISTS users;
 
 --changeset akmal:add-admin-to-users
 --preconditions onFail:MARK_RAN onError:HALT
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM USERS WHERE USERNAME = 'akmal9433@gmail.com';
-insert into users(username, password, full_name, email, role) values ('akmal9433@gmail.com', '$2a$10$7IlM1Z52.7RpBw8HdPD.ae2Nzxy3DhE3Xn5FjTcfMbs.MsFaEpNxe', 'Пепе Пепе', 'akmal9433@gmail.com', 'ADMIN');
+insert into users(username, password, full_name, email, role, enabled) values ('akmal9433@gmail.com', '$2a$10$7IlM1Z52.7RpBw8HdPD.ae2Nzxy3DhE3Xn5FjTcfMbs.MsFaEpNxe', 'Пепе Пепе', 'akmal9433@gmail.com', 'ADMIN', true);
 --rollback DELETE FROM USERS WHERE USERNAME = 'Admin';
 
 --changeset akmal:create-country-table
@@ -31,6 +32,7 @@ CREATE TABLE country
     currency_code NUMERIC(3),
     currency_name VARCHAR(256)
 );
+CREATE INDEX idx_country_code ON country (country_code);
 --rollback DROP TABLE IF EXISTS country;
 
 --changeset akmal:create-incubator-table
@@ -57,7 +59,7 @@ CREATE TABLE incubator_projects
 (
     id           BIGSERIAL PRIMARY KEY,
     incubator_id BIGINT REFERENCES incubator (id) NOT NULL,
-    year         INTEGER                          NOT NULL UNIQUE CHECK (year BETWEEN 1970 AND EXTRACT (YEAR FROM CURRENT_DATE):: INT),
+    year         INTEGER                          NOT NULL CHECK (year BETWEEN 1970 AND EXTRACT (YEAR FROM CURRENT_DATE):: INT),
     projects_count INTEGER                          NOT NULL,
     fund           NUMERIC(19,2)                      NOT NULL
 );
@@ -87,8 +89,10 @@ CREATE INDEX idx_incubator_characteristics_incubator_id ON incubator_characteris
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'incubator_residents'
 CREATE TABLE incubator_residents
 (
-    id                    BIGSERIAL PRIMARY KEY,
-    incubator_id          BIGINT REFERENCES incubator (id) NOT NULL,
+    id           BIGSERIAL PRIMARY KEY,
+    incubator_id BIGINT REFERENCES incubator (id) NOT NULL,
+    year         INTEGER                          NOT NULL CHECK (year BETWEEN 1970 AND EXTRACT (YEAR FROM CURRENT_DATE):: INT
+) ,
     incubated_companies   NUMERIC(22) NOT NULL,
     failed_companies      NUMERIC(22) NOT NULL,
     graduated_companies   NUMERIC(22) NOT NULL,
@@ -166,8 +170,10 @@ CREATE INDEX idx_incubator_services_incubator_id ON incubator_services(incubator
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'incubator_income'
 CREATE TABLE incubator_income
 (
-    id                     BIGSERIAL PRIMARY KEY,
-    incubator_id           BIGINT REFERENCES incubator (id) NOT NULL,
+    id           BIGSERIAL PRIMARY KEY,
+    incubator_id BIGINT REFERENCES incubator (id) NOT NULL,
+    year         INTEGER                          NOT NULL CHECK (year BETWEEN 1970 AND EXTRACT (YEAR FROM CURRENT_DATE):: INT
+) ,
     initial_capital        NUMERIC(19, 2)                   NOT NULL,
     paid_services_income   NUMERIC(19, 2)                   NOT NULL,
     paid_training_income   NUMERIC(19, 2)                   NOT NULL,
@@ -184,8 +190,10 @@ CREATE INDEX idx_incubator_income_incubator_id ON incubator_income(incubator_id)
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'incubator_investment'
 CREATE TABLE incubator_investment
 (
-    id                      BIGSERIAL PRIMARY KEY,
-    incubator_id            BIGINT REFERENCES incubator (id) NOT NULL,
+    id           BIGSERIAL PRIMARY KEY,
+    incubator_id BIGINT REFERENCES incubator (id) NOT NULL,
+    year         INTEGER                          NOT NULL CHECK (year BETWEEN 1970 AND EXTRACT (YEAR FROM CURRENT_DATE):: INT
+) ,
     seed                    NUMERIC(19, 2)                   NOT NULL,
     state                   NUMERIC(19, 2)                   NOT NULL,
     privates                NUMERIC(19, 2)                   NOT NULL,
@@ -214,3 +222,40 @@ CREATE TABLE incubator_expenses
 CREATE INDEX idx_incubator_expenses_incubator_id ON incubator_expenses(incubator_id);
 --rollback DROP TABLE IF EXISTS incubator_expenses;
 
+--changeset akmal:create-spring-session-table
+--preconditions onFail:MARK_RAN onError:HALT
+--precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'spring_session'
+CREATE TABLE SPRING_SESSION (
+                                PRIMARY_ID CHAR(36) NOT NULL,
+                                SESSION_ID CHAR(36) NOT NULL,
+                                CREATION_TIME BIGINT NOT NULL,
+                                LAST_ACCESS_TIME BIGINT NOT NULL,
+                                MAX_INACTIVE_INTERVAL INT NOT NULL,
+                                EXPIRY_TIME BIGINT NOT NULL,
+                                PRINCIPAL_NAME VARCHAR(100),
+                                CONSTRAINT SPRING_SESSION_PK PRIMARY KEY (PRIMARY_ID),
+                                CONSTRAINT SPRING_SESSION_UK UNIQUE (SESSION_ID)
+);
+
+CREATE INDEX SPRING_SESSION_IX1
+    ON SPRING_SESSION (EXPIRY_TIME);
+
+CREATE INDEX SPRING_SESSION_IX2
+    ON SPRING_SESSION (PRINCIPAL_NAME);
+--rollback DROP TABLE IF EXISTS SPRING_SESSION;
+
+--changeset akmal:create-spring-session-attributes-table
+--preconditions onFail:MARK_RAN onError:HALT
+--precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'spring_session_attributes'
+CREATE TABLE SPRING_SESSION_ATTRIBUTES (
+                                           SESSION_PRIMARY_ID CHAR(36) NOT NULL,
+                                           ATTRIBUTE_NAME VARCHAR(200) NOT NULL,
+                                           ATTRIBUTE_BYTES BYTEA NOT NULL,
+                                           CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK
+                                               PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
+                                           CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK
+                                               FOREIGN KEY (SESSION_PRIMARY_ID)
+                                                   REFERENCES SPRING_SESSION (PRIMARY_ID)
+                                                   ON DELETE CASCADE
+);
+--rollback DROP TABLE IF EXISTS SPRING_SESSION_ATTRIBUTES;

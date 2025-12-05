@@ -1,21 +1,23 @@
-package kz.bi.service.util;
+package kz.bi.rest.controller.converter;
 
 import kz.bi.dao.entity.incubator.AverageEmployeePerResident;
 import kz.bi.dao.entity.incubator.ShareAmount;
 import kz.bi.rest.controller.dto.incubator.request.*;
 import kz.bi.service.dto.incubator.*;
+import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RequestToDtoConverter {
+@UtilityClass
+public class IncubatorRequestToDtoConverter {
 
-    public static IncubatorDto convertToDto(IncubatorRequest request) {
-        IncubatorDto dto = new IncubatorDto();
+    public static AddOrEditIncubatorDto convertToDto(IncubatorRequest request) {
+        AddOrEditIncubatorDto dto = new AddOrEditIncubatorDto();
         dto.setName(request.getName());
         dto.setDescription(request.getDescription());
         dto.setManagerId(request.getManagerId());
-        dto.setCountryId(request.getCountryId());
+        dto.setCountryCode(request.getCountryCode());
         dto.setFounded(request.getFounded());
 
         if (request.getIncubatorCharacteristics() != null) {
@@ -30,20 +32,93 @@ public class RequestToDtoConverter {
             dto.setIncubatorSpace(convertToSpaceDto(request.getIncubatorSpace()));
         }
 
-        if (request.getIncubatorResidents() != null) {
-            dto.setIncubatorResidents(convertToResidentsDto(request.getIncubatorResidents()));
+        if (request.getIncubatorResidents() != null && !request.getIncubatorResidents().isEmpty()) {
+            List<IncubatorResidentsDto> residentsDtos = new ArrayList<>();
+            for (IncubatorResidents residentsRequest : request.getIncubatorResidents()) {
+                residentsDtos.add(convertToResidentsDto(residentsRequest));
+            }
+            dto.setIncubatorResidents(residentsDtos);
         }
 
         if (request.getIncubatorServices() != null) {
             dto.setIncubatorServices(convertToServiceDto(request.getIncubatorServices()));
         }
 
-        if (request.getIncubatorIncome() != null) {
-            dto.setIncubatorIncome(convertToIncomeDto(request.getIncubatorIncome()));
+        if (request.getIncubatorIncome() != null && !request.getIncubatorIncome().isEmpty()) {
+            List<IncubatorIncomeDto> incomeDtos = new ArrayList<>();
+            for (IncubatorIncome incomeRequest : request.getIncubatorIncome()) {
+                incomeDtos.add(convertToIncomeDto(incomeRequest));
+            }
+            dto.setIncubatorIncome(incomeDtos);
         }
 
-        if (request.getIncubatorInvestment() != null) {
-            dto.setIncubatorInvestment(convertToInvestmentDto(request.getIncubatorInvestment()));
+        if (request.getIncubatorInvestment() != null && !request.getIncubatorInvestment().isEmpty()) {
+            List<IncubatorInvestmentDto> investmentDtos = new ArrayList<>();
+            for (IncubatorInvestment investmentRequest : request.getIncubatorInvestment()) {
+                investmentDtos.add(convertToInvestmentDto(investmentRequest));
+            }
+            dto.setIncubatorInvestment(investmentDtos);
+        }
+
+        if (request.getIncubatorExpense() != null) {
+            dto.setIncubatorExpense(convertToExpenseDto(request.getIncubatorExpense()));
+        }
+
+        if (request.getIncubatorProjects() != null && !request.getIncubatorProjects().isEmpty()) {
+            List<IncubatorProjectsDto> projectsDtos = new ArrayList<>();
+            for (IncubatorProjects projectRequest : request.getIncubatorProjects()) {
+                projectsDtos.add(convertToProjectsDto(projectRequest));
+            }
+            dto.setIncubatorProjects(projectsDtos);
+        }
+
+        return dto;
+    }
+
+    public static AddOrEditIncubatorDto convertToDto(UpdateIncubatorRequest request) {
+        AddOrEditIncubatorDto dto = new AddOrEditIncubatorDto();
+        dto.setUuid(request.getUuid());
+        dto.setDescription(request.getDescription());
+        dto.setFounded(request.getFounded());
+
+        if (request.getIncubatorCharacteristics() != null) {
+            dto.setIncubatorCharacteristics(convertToCharacteristicsDto(request.getIncubatorCharacteristics()));
+        }
+
+        if (request.getIncubatorInfrastructure() != null) {
+            dto.setIncubatorInfrastructure(convertToInfrastructureDto(request.getIncubatorInfrastructure()));
+        }
+
+        if (request.getIncubatorSpace() != null) {
+            dto.setIncubatorSpace(convertToSpaceDto(request.getIncubatorSpace()));
+        }
+
+        if (request.getIncubatorResidents() != null && !request.getIncubatorResidents().isEmpty()) {
+            List<IncubatorResidentsDto> residentsDtos = new ArrayList<>();
+            for (IncubatorResidents residentsRequest : request.getIncubatorResidents()) {
+                residentsDtos.add(convertToResidentsDto(residentsRequest));
+            }
+            dto.setIncubatorResidents(residentsDtos);
+        }
+
+        if (request.getIncubatorServices() != null) {
+            dto.setIncubatorServices(convertToServiceDto(request.getIncubatorServices()));
+        }
+
+        if (request.getIncubatorIncome() != null && !request.getIncubatorIncome().isEmpty()) {
+            List<IncubatorIncomeDto> incomeDtos = new ArrayList<>();
+            for (IncubatorIncome incomeRequest : request.getIncubatorIncome()) {
+                incomeDtos.add(convertToIncomeDto(incomeRequest));
+            }
+            dto.setIncubatorIncome(incomeDtos);
+        }
+
+        if (request.getIncubatorInvestment() != null && !request.getIncubatorInvestment().isEmpty()) {
+            List<IncubatorInvestmentDto> investmentDtos = new ArrayList<>();
+            for (IncubatorInvestment investmentRequest : request.getIncubatorInvestment()) {
+                investmentDtos.add(convertToInvestmentDto(investmentRequest));
+            }
+            dto.setIncubatorInvestment(investmentDtos);
         }
 
         if (request.getIncubatorExpense() != null) {
@@ -95,6 +170,7 @@ public class RequestToDtoConverter {
 
     private static IncubatorResidentsDto convertToResidentsDto(IncubatorResidents request) {
         IncubatorResidentsDto dto = new IncubatorResidentsDto();
+        dto.setYear(request.getYear());
         dto.setIncubatedCompanies(request.getIncubatedCompanies().longValue());
         dto.setFailedCompanies(request.getFailedCompanies().longValue());
         dto.setGraduatedCompanies(request.getGraduatedCompanies().longValue());
@@ -132,6 +208,7 @@ public class RequestToDtoConverter {
 
     private static IncubatorIncomeDto convertToIncomeDto(IncubatorIncome request) {
         IncubatorIncomeDto dto = new IncubatorIncomeDto();
+        dto.setYear(request.getYear());
         dto.setInitialCapital(request.getInitialCapital());
         dto.setPaidServicesIncome(request.getPaidServicesIncome());
         dto.setPaidTrainingIncome(request.getPaidTrainingIncome());
@@ -144,6 +221,7 @@ public class RequestToDtoConverter {
 
     private static IncubatorInvestmentDto convertToInvestmentDto(IncubatorInvestment request) {
         IncubatorInvestmentDto dto = new IncubatorInvestmentDto();
+        dto.setYear(request.getYear());
         dto.setSeed(request.getSeed());
         dto.setState(request.getState());
         dto.setPrivates(request.getPrivates());

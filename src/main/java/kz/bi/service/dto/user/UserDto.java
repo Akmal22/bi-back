@@ -1,4 +1,4 @@
-package kz.bi.service.dto;
+package kz.bi.service.dto.user;
 
 import kz.bi.dao.entity.user.Role;
 import lombok.Data;
@@ -13,4 +13,5 @@ public class UserDto {
     private String email;
     private String fullName;
     private Role role;
+    boolean enabled;
 }

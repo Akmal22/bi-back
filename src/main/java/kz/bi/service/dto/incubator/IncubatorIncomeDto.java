@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 public class IncubatorIncomeDto {
     private Long id;
     private Long incubatorId;
+    private Integer year;
     private BigDecimal initialCapital;
     private BigDecimal paidServicesIncome;
     private BigDecimal paidTrainingIncome;

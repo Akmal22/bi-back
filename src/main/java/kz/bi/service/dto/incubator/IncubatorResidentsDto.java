@@ -6,6 +6,7 @@ import lombok.Data;
 public class IncubatorResidentsDto {
     private Long id;
     private Long incubatorId;
+    private Integer year;
     private long incubatedCompanies;
     private long failedCompanies;
     private long graduatedCompanies;
