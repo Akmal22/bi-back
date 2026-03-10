@@ -3,7 +3,7 @@ package kz.bi.rest.controller.dto.incubator.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Schema(description = "Detailed incubator information")
@@ -18,7 +18,7 @@ public class Incubator {
     @Schema(description = "Country information")
     private CountryInfo country;
     @Schema(description = "Date when incubator was founded", example = "2020-01-15T10:00:00")
-    private LocalDateTime founded;
+    private LocalDate founded;
     @Schema(description = "Incubator characteristics")
     private IncubatorCharacteristics incubatorCharacteristics;
     @Schema(description = "Incubator infrastructure")

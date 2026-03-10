@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth").permitAll()
+                        .requestMatchers("/actuator/*").permitAll()
                         .requestMatchers("/auth/logout").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/api-docs/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
@@ -47,7 +48,6 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/countries").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 );
-
 
         return http.build();
     }
@@ -57,12 +57,12 @@ public class SecurityConfiguration {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOrigins(List.of(frontendOrigin));
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        cfg.setAllowedHeaders(List.of("Content-Type", "X-Requested-With"));
+        cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true); // allow cookie
         cfg.setMaxAge(3600L);          // cache preflight 1 hour
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/bi", cfg);
+        source.registerCorsConfiguration("/**", cfg);
         return source;
     }
 

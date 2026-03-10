@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class IncubatorRequest {
 
     @Schema(description = "Date when incubator was founded", example = "2020-01-15T10:00:00", required = true)
     @NotNull(message = "Founded date is required")
-    private LocalDateTime founded;
+    private LocalDate founded;
 
     @Schema(description = "Incubator characteristics", required = true)
     @NotNull(message = "Incubator characteristics is required")

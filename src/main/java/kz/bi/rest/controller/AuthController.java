@@ -13,6 +13,7 @@ import kz.bi.rest.controller.dto.ErrorResponse;
 import kz.bi.rest.controller.dto.Response;
 import kz.bi.rest.controller.dto.auth.LoginRequest;
 import kz.bi.rest.controller.dto.auth.LoginResponse;
+import kz.bi.service.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
+    private final SecurityUtils securityUtils;
 
     @Operation(summary = "Authenticate user", description = "Authenticates a user with username and password and creates a session")
     @ApiResponses(value = {
@@ -66,9 +68,7 @@ public class AuthController {
 
     @GetMapping("current")
     public ResponseEntity<Response> getCurrentUser() {
-        var currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
-        Assert.notNull(currentAuthentication, "Authentication is required");
-        UserDetails principal = (UserDetails) currentAuthentication.getPrincipal();
+        UserDetails principal = securityUtils.getCurrentUser();
 
         return new ResponseEntity<>(
                 new LoginResponse(principal.getUsername(), principal.getAuthorities()

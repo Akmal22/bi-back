@@ -6,7 +6,7 @@ import kz.bi.service.dto.user.UserDto;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -27,5 +27,5 @@ public class IncubatorInfoDto {
     private List<IncubatorInvestmentDto> incubatorInvestment;
     private IncubatorExpenseDto incubatorExpense;
     private List<IncubatorProjectsDto> incubatorProjects;
-    private LocalDateTime founded;
+    private LocalDate founded;
 }

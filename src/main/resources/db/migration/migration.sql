@@ -18,7 +18,7 @@ CREATE TABLE users
 --changeset akmal:add-admin-to-users
 --preconditions onFail:MARK_RAN onError:HALT
 --precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM USERS WHERE USERNAME = 'akmal9433@gmail.com';
-insert into users(username, password, full_name, email, role, enabled) values ('akmal9433@gmail.com', '$2a$10$7IlM1Z52.7RpBw8HdPD.ae2Nzxy3DhE3Xn5FjTcfMbs.MsFaEpNxe', 'Пепе Пепе', 'akmal9433@gmail.com', 'ADMIN', true);
+insert into users(username, password, full_name, email, role, enabled) values ('admin', '$2a$10$K4EjzB8ufiFVB/m2S8shq.Dq9OI3mbNThyGCCwMwtwa4UK5S9UahK', 'Пепе Пепе', 'akmal9433@gmail.com', 'ADMIN', true);
 --rollback DELETE FROM USERS WHERE USERNAME = 'Admin';
 
 --changeset akmal:create-country-table

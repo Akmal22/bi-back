@@ -3,12 +3,14 @@ package kz.bi.rest.controller.dto.user;
 import io.swagger.v3.oas.annotations.media.Schema;
 import kz.bi.rest.controller.dto.SuccessResponse;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.List;
 
 @Schema(description = "Response containing paginated list of users")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class GetUsersResponse extends SuccessResponse {
     @Schema(description = "List of users")

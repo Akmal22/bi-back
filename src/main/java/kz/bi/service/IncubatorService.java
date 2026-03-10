@@ -15,15 +15,14 @@ import kz.bi.service.dto.incubator.info.IncubatorsDto;
 import kz.bi.service.exception.IncubatorNotAvailableException;
 import kz.bi.service.exception.IncubatorNotFoundException;
 import kz.bi.service.exception.ValidationException;
+import kz.bi.service.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,7 +34,7 @@ public class IncubatorService {
     private final IncubatorRepository incubatorRepository;
     private final CountryRepository countryRepository;
     private final UsersRepository usersRepository;
-
+    private final SecurityUtils securityUtils;
 
     public String addIncubator(AddOrEditIncubatorDto addOrEditIncubatorDto) {
         // Check if incubator with the same name already exists
@@ -48,14 +47,12 @@ public class IncubatorService {
 
         UserEntity manager;
         if (addOrEditIncubatorDto.getManagerId() == null) {
-            var currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
-            Assert.notNull(currentAuthentication, "Authentication is required");
-            var user = (UserEntity) currentAuthentication.getPrincipal();
+            var user = securityUtils.getCurrentUser();
             if (user.getRole() == Role.ADMIN) {
                 log.error("Admin has to specify manager for incubator");
                 throw new ValidationException("manager.not.specified", "Manager not specified");
             }
-            manager = usersRepository.findByUsername(currentAuthentication.getPrincipal().toString())
+            manager = usersRepository.findByUsername(user.getUsername())
                     .orElseThrow(() -> new ValidationException("user.not.exist", "User does not exist"));
         } else {
             manager = usersRepository.findById(addOrEditIncubatorDto.getManagerId())
@@ -389,8 +386,7 @@ public class IncubatorService {
 
     public IncubatorsDto getIncubators(Pageable pageable) {
         // Get current authentication
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        Assert.notNull(authentication, "Authentication is required");
+        var authentication = securityUtils.getCurrentAuthentication();
 
         Page<IncubatorEntity> incubators;
 
@@ -442,8 +438,7 @@ public class IncubatorService {
     }
 
     private void checkAccessToIncubator(IncubatorEntity incubator) {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        Assert.notNull(authentication, "Authentication is required");
+        var authentication = securityUtils.getCurrentAuthentication();
         UserEntity user = (UserEntity) authentication.getPrincipal();
         if (user.getRole() != Role.ADMIN && !incubator.getManager().getUsername().equals(user.getUsername())) {
             log.warn("User [{}] does not have access to incubator [{}]", authentication.getPrincipal(),

@@ -24,6 +24,7 @@ dependencyResolutionManagement {
             library("spring-boot-starter-security", "org.springframework.boot", "spring-boot-starter-security").withoutVersion()
             library("spring-session-jdbc", "org.springframework.session", "spring-session-jdbc").withoutVersion()
             library("spring-openapi-starter", "org.springdoc", "springdoc-openapi-starter-webmvc-ui").version("2.8.14")
+            library("spring-boot-starter-actuator", "org.springframework.boot", "spring-boot-starter-actuator").withoutVersion()
 
             // Other
             library("liquibase-core", "org.liquibase", "liquibase-core").withoutVersion()
@@ -33,6 +34,7 @@ dependencyResolutionManagement {
             // Test
             library("junit-platform-launcher", "org.junit.platform", "junit-platform-launcher").withoutVersion()
             library("spring-boot-test", "org.springframework.boot", "spring-boot-starter-test").withoutVersion()
+            library("h2", "com.h2database", "h2").withoutVersion()
         }
     }
 }

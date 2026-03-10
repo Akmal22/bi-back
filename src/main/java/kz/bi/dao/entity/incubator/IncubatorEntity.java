@@ -6,7 +6,7 @@ import kz.bi.dao.entity.CountryEntity;
 import kz.bi.dao.entity.user.UserEntity;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -79,5 +79,5 @@ public class IncubatorEntity {
     private Set<IncubatorProjectsEntity> incubatorProjects;
 
     @Column(name = "founded", nullable = false)
-    private LocalDateTime founded;
+    private LocalDate founded;
 }

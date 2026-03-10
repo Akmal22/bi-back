@@ -6,6 +6,7 @@ import kz.bi.service.converter.UserConverter;
 import kz.bi.service.dto.user.UserDto;
 import kz.bi.service.dto.user.UsersDto;
 import kz.bi.service.exception.ValidationException;
+import kz.bi.service.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class UsersService implements UserDetailsService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityUtils securityUtils;
 
     public void createUser(UserDto userDto) {
         if (usersRepository.existsByUsername(userDto.getUsername())) {
@@ -65,8 +67,10 @@ public class UsersService implements UserDetailsService {
 
     public UsersDto getUsers(Pageable pageable) {
         Page<UserEntity> users = usersRepository.findAll(pageable);
+        var user = securityUtils.getCurrentUser();
         return new UsersDto()
                 .setUsers(users.getContent().stream()
+                        .filter(u -> !u.getUsername().equals(user.getUsername()))
                         .map(UserConverter::convertFromUserEntity)
                         .collect(Collectors.toList()))
                 .setPage(users.getNumber())

@@ -7,14 +7,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Schema(description = "Request to update an existing incubator")
 @Data
 public class UpdateIncubatorRequest {
-    
+
     @Schema(description = "Incubator UUID", example = "123e4567-e89b-12d3-a456-426614174000", required = true)
     @NotBlank(message = "UUID is required")
     private String uuid;
@@ -26,7 +25,7 @@ public class UpdateIncubatorRequest {
 
     @Schema(description = "Date when incubator was founded", example = "2020-01-15T10:00:00", required = true)
     @NotNull(message = "Founded date is required")
-    private LocalDateTime founded;
+    private LocalDate founded;
 
     @Schema(description = "Incubator characteristics")
     @Valid

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Schema(description = "Simple incubator information")
 @Data
@@ -17,5 +17,5 @@ public class SimpleIncubator {
     @Schema(description = "Incubator description", example = "A technology-focused business incubator")
     private String description;
     @Schema(description = "Date when incubator was founded", example = "2020-01-15T10:00:00")
-    private LocalDateTime founded;
+    private LocalDate founded;
 }

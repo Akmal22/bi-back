@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.session.jdbc)
     implementation(libs.spring.openapi.starter)
+    implementation(libs.spring.boot.starter.actuator)
     implementation(libs.liquibase.core)
     implementation(libs.postgresql)
     implementation(libs.lombok)
@@ -33,6 +34,7 @@ dependencies {
     annotationProcessor(libs.lombok)
 
     testImplementation(libs.spring.boot.test)
+    testImplementation(libs.h2)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
