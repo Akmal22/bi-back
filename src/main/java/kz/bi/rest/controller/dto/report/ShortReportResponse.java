@@ -21,9 +21,9 @@ public class ShortReportResponse extends SuccessResponse {
     @Schema(description = "Incubator manager info")
     private ManagerInfo managerInfo;
     @Schema(description = "Set of incubator projects")
-    private Set<IncubatorProjectsInfo> incubatorProjectInfos;
+    private List<IncubatorProjectsInfo> incubatorProjectInfos;
     @Schema(description = "Set of incubator income data")
-    private Set<IncubatorIncomeInfo> incubatorIncomeInfo;
+    private List<IncubatorIncomeInfo> incubatorIncomeInfo;
     @Schema(description = "List of incubator fund data")
     private List<IncubatorFundInfo> incubatorFundInfo;
     @Schema(description = "List of application data")

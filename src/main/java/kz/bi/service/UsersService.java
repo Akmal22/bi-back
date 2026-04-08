@@ -80,6 +80,20 @@ public class UsersService implements UserDetailsService {
                 .setLast(users.isLast());
     }
 
+    public void changePassword(String currentPassword, String newPassword) {
+        var user = securityUtils.getCurrentUser();
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            log.error("Password change failed for user {}: current password is incorrect", user.getUsername());
+            throw new ValidationException("password.incorrect", "Current password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        usersRepository.save(user);
+
+        log.info("Password changed for user {}", user.getUsername());
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var optionalUser = usersRepository.findByUsername(username);

@@ -40,22 +40,22 @@ public class FullReportConverter {
 
         // Convert IncubatorProjectsDto to IncubatorProjectsInfo
         if (dto.getIncubatorProjects() != null && !dto.getIncubatorProjects().isEmpty()) {
-            Set<IncubatorProjectsInfo> projects = dto.getIncubatorProjects().stream()
+            List<IncubatorProjectsInfo> projects = dto.getIncubatorProjects().stream()
                     .map(FullReportConverter::convertProjects)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             response.setIncubatorProjectInfos(projects);
         } else {
-            response.setIncubatorProjectInfos(new HashSet<>());
+            response.setIncubatorProjectInfos(new ArrayList<>());
         }
 
         // Convert IncubatorIncomeDto to IncubatorIncomeInfo (calculate total income)
         if (dto.getIncubatorIncome() != null && !dto.getIncubatorIncome().isEmpty()) {
-            Set<IncubatorIncomeInfo> income = dto.getIncubatorIncome().stream()
+            List<IncubatorIncomeInfo> income = dto.getIncubatorIncome().stream()
                     .map(FullReportConverter::convertIncome)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             response.setIncubatorIncomeInfo(income);
         } else {
-            response.setIncubatorIncomeInfo(new HashSet<>());
+            response.setIncubatorIncomeInfo(new ArrayList<>());
         }
 
         // Convert IncubatorInvestmentDto to IncubatorFundInfo

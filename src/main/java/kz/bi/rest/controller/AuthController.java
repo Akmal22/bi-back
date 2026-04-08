@@ -11,8 +11,10 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kz.bi.rest.controller.dto.ErrorResponse;
 import kz.bi.rest.controller.dto.Response;
+import kz.bi.rest.controller.dto.auth.ChangePasswordRequest;
 import kz.bi.rest.controller.dto.auth.LoginRequest;
 import kz.bi.rest.controller.dto.auth.LoginResponse;
+import kz.bi.service.UsersService;
 import kz.bi.service.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +26,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Authentication", description = "Authentication endpoints for user login and logout")
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final SecurityUtils securityUtils;
+    private final UsersService usersService;
 
     @Operation(summary = "Authenticate user", description = "Authenticates a user with username and password and creates a session")
     @ApiResponses(value = {
@@ -90,6 +92,20 @@ public class AuthController {
             session.invalidate();
         }
         SecurityContextHolder.clearContext();
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Change user password", description = "Changes current user password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Password successfully changed"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping("password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        usersService.changePassword(request.getCurrentPassword(), request.getNewPassword());
         return ResponseEntity.noContent().build();
     }
 }

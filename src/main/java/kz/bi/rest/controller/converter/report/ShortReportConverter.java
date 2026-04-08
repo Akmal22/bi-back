@@ -12,9 +12,7 @@ import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -36,22 +34,22 @@ public class ShortReportConverter {
 
         // Convert IncubatorProjectsDto to IncubatorProjects
         if (dto.getIncubatorProjects() != null && !dto.getIncubatorProjects().isEmpty()) {
-            Set<IncubatorProjectsInfo> projects = dto.getIncubatorProjects().stream()
+            List<IncubatorProjectsInfo> projects = dto.getIncubatorProjects().stream()
                     .map(ShortReportConverter::convertProjects)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             response.setIncubatorProjectInfos(projects);
         } else {
-            response.setIncubatorProjectInfos(new HashSet<>());
+            response.setIncubatorProjectInfos(new ArrayList<>());
         }
 
         // Convert IncubatorIncomeDto to IncubatorIncome (calculate total income)
         if (dto.getIncubatorIncome() != null && !dto.getIncubatorIncome().isEmpty()) {
-            Set<IncubatorIncomeInfo> income = dto.getIncubatorIncome().stream()
+            List<IncubatorIncomeInfo> income = dto.getIncubatorIncome().stream()
                     .map(ShortReportConverter::convertIncome)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             response.setIncubatorIncomeInfo(income);
         } else {
-            response.setIncubatorIncomeInfo(new HashSet<>());
+            response.setIncubatorIncomeInfo(new ArrayList<>());
         }
 
         // Convert IncubatorInvestmentDto to IncubatorFund
