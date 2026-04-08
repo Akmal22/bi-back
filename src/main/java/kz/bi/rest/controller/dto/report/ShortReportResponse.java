@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.List;
-import java.util.Set;
 
 @Schema(description = "Short report response containing key metrics")
 @Data
