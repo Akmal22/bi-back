@@ -3,6 +3,9 @@ FROM eclipse-temurin:17-jdk-jammy AS builder
 
 WORKDIR /app
 
+# Fix for QEMU emulation TLS bug when cross-compiling on Apple Silicon
+ENV JAVA_TOOL_OPTIONS="-Djdk.tls.client.protocols=TLSv1.2,TLSv1.3 -Djdk.tls.disabledAlgorithms="
+
 # Copy Gradle wrapper & build files first (to leverage Docker cache)
 COPY gradlew settings.gradle.kts ./
 COPY gradle ./gradle
